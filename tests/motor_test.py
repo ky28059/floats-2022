@@ -1,5 +1,5 @@
 import time
-from hatch import start_talon, run_talon, cleanup_io
+from modules.hatch import start_talon, run_talon, cleanup_io
 
 if __name__ == '__main__':
     print("Starting TalonSRX PWM signal.")

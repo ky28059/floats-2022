@@ -1,9 +1,6 @@
 import time
 import RPi.GPIO as GPIO
-
-TALON_PIN = 33
-FORWARD_LS_PIN = 29
-BACKWARD_LS_PIN = 31
+from constants import TALON_PIN, FORWARD_LS_PIN, BACKWARD_LS_PIN
 
 CYCLE_TIME = 10.0  # ms [2.9, 100]
 PULSE_FREQUENCY = 1000.0 / CYCLE_TIME  # Hz (up to 100Hz)
@@ -41,7 +38,6 @@ def cleanup_io() -> None:
 
 def main():
     start_talon()
-
     try:
         while True:
             # Run forward and wait for the forward limit switch to trip
