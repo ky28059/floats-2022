@@ -17,7 +17,7 @@ print(f"Running with frequency={PULSE_FREQUENCY}Hz, duty cycle min={1.0 / CYCLE_
 talon = GPIO.PWM(TALON_PIN, PULSE_FREQUENCY)
 
 
-# Converts more standard [-1.0, 1.0] percent output values to duty cycle values.
+# Converts more standard [-1.0, 1.0] percent output values to talon duty cycle percentages [0.0, 100.0].
 def convert_duty_cycle(p: float) -> float:
     constrained = min(1.0, max(-1.0, p))
     return ((constrained * 0.5) + 1.5) / CYCLE_TIME
