@@ -28,21 +28,32 @@ def run_talon(p: float) -> None:
     talon.ChangeDutyCycle(convert_duty_cycle(p))
 
 
-talon.start(convert_duty_cycle(0))
+def main():
+    talon.start(convert_duty_cycle(0))
 
-while True:
-    # Run forward and wait for the forward limit switch to trip
-    run_talon(0.3)
-    GPIO.wait_for_edge(FORWARD_LS_PIN, GPIO.RISING, timeout=5000)
+    try:
+        while True:
+            # Run forward and wait for the forward limit switch to trip
+            run_talon(0.3)
+            GPIO.wait_for_edge(FORWARD_LS_PIN, GPIO.RISING, timeout=5000)
 
-    # Stop the motor when hit and keep the hatch open for 3 seconds
-    run_talon(0)
-    time.sleep(3)
+            # Stop the motor when hit and keep the hatch open for 3 seconds
+            run_talon(0)
+            time.sleep(3)
 
-    # Run backwards and wait for the backwards limit switch to trip
-    run_talon(-0.3)
-    GPIO.wait_for_edge(BACKWARD_LS_PIN, GPIO.RISING, timeout=5000)
+            # Run backwards and wait for the backwards limit switch to trip
+            run_talon(-0.3)
+            GPIO.wait_for_edge(BACKWARD_LS_PIN, GPIO.RISING, timeout=5000)
 
-    # Stop the motor when hit and keep the hatch closed for 3 seconds
-    run_talon(0)
-    time.sleep(3)
+            # Stop the motor when hit and keep the hatch closed for 3 seconds
+            run_talon(0)
+            time.sleep(3)
+
+    # Clean up and exit on keyboard interrupt
+    except KeyboardInterrupt:
+        talon.stop()
+        GPIO.cleanup()
+
+
+if __name__ == '__main__':
+    main()
