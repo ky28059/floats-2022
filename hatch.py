@@ -23,13 +23,24 @@ def convert_duty_cycle(p: float) -> float:
     return ((constrained * 0.5) + 1.5) / CYCLE_TIME
 
 
+# Starts the PWM signal to the talon.
+def start_talon() -> None:
+    talon.start(convert_duty_cycle(0))
+
+
 # Runs the talon at a percent output with PWM duty cycle.
 def run_talon(p: float) -> None:
     talon.ChangeDutyCycle(convert_duty_cycle(p))
 
 
+# Stops the PWM signal and cleans up remaining GPIO resources.
+def cleanup_io() -> None:
+    talon.stop()
+    GPIO.cleanup()
+
+
 def main():
-    talon.start(convert_duty_cycle(0))
+    start_talon()
 
     try:
         while True:
@@ -51,8 +62,7 @@ def main():
 
     # Clean up and exit on keyboard interrupt
     except KeyboardInterrupt:
-        talon.stop()
-        GPIO.cleanup()
+        cleanup_io()
 
 
 if __name__ == '__main__':
