@@ -11,6 +11,7 @@ def report_edge(channel):
 
 
 if __name__ == '__main__':
+    print(f"Setting up listeners on pins {FORWARD_LS_PIN}, {BACKWARD_LS_PIN}.")
     GPIO.add_event_detect(FORWARD_LS_PIN, GPIO.RISING, callback=report_edge)
     GPIO.add_event_detect(BACKWARD_LS_PIN, GPIO.RISING, callback=report_edge)
     try:
