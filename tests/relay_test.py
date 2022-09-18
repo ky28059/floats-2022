@@ -2,7 +2,7 @@ import time
 import RPi.GPIO as GPIO
 from constants import FM_RELAY_PIN
 
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(FM_RELAY_PIN, GPIO.OUT)
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 from constants import FORWARD_LS_PIN, BACKWARD_LS_PIN
 
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
 GPIO.setup([FORWARD_LS_PIN, BACKWARD_LS_PIN], GPIO.IN)
 
 
