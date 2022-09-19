@@ -7,7 +7,7 @@ PULSE_FREQUENCY = 1000.0 / CYCLE_TIME  # Hz (up to 100Hz)
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(TALON_PIN, GPIO.OUT)
-GPIO.setup([FORWARD_LS_PIN, BACKWARD_LS_PIN], GPIO.IN)
+GPIO.setup([FORWARD_LS_PIN, BACKWARD_LS_PIN], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup([FM_RELAY_PIN, LED_RELAY_PIN], GPIO.OUT)
 
 print(f"Running with frequency={PULSE_FREQUENCY}Hz, duty cycle min={1.0 / CYCLE_TIME}, max={2.0 / CYCLE_TIME}")

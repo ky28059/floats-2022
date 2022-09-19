@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 from constants import FORWARD_LS_PIN, BACKWARD_LS_PIN
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup([FORWARD_LS_PIN, BACKWARD_LS_PIN], GPIO.IN)
+GPIO.setup([FORWARD_LS_PIN, BACKWARD_LS_PIN], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 
 # Logs a detected edge on the given channel.
