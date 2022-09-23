@@ -1,5 +1,6 @@
 import time
 import RPi.GPIO as GPIO
+from schedule import is_passing, during_school
 from constants import TALON_PIN, FORWARD_LS_PIN, BACKWARD_LS_PIN, FM_RELAY_PIN, LED_RELAY_PIN
 
 CYCLE_TIME = 10.0  # ms [2.9, 100]
@@ -30,6 +31,10 @@ def main():
     talon.start(convert_duty_cycle(0))
     try:
         while True:
+            # Wait for school and passing period before running
+            is_passing.wait()
+            during_school.wait()
+
             # Run forward and wait for the forward limit switch to trip
             run_talon(0.3)
             GPIO.output([FM_RELAY_PIN, LED_RELAY_PIN], GPIO.HIGH)  # Turn on the fog machine and LEDs

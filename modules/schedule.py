@@ -1,4 +1,4 @@
-from threading import Thread
+from threading import Thread, Event
 import time
 from datetime import datetime
 import json
@@ -6,10 +6,12 @@ import json
 with open('../schedule.json') as f:
     schedules = json.load(f)
 
-data = {
-    'before_school': False,  # Whether it is before the start or after the end of the school day
-    'is_passing': True  # Whether no class is currently ongoing
-}
+during_school = Event()  # Whether it is after the start or before the end of the school day
+is_passing = Event()  # Whether no class is currently ongoing
+
+# Default both to true for weekend debugging use
+during_school.set()
+is_passing.set()
 
 
 # Continually updates the schedule data, ticking every 0.5 seconds and warning on index errors.
@@ -26,16 +28,17 @@ def update_schedule_data():
 
             # Don't run electronics if more than 45 minutes before school or 15 minutes after
             if curr_schedule[0]["s"] - curr_minutes >= 45 or curr_minutes - curr_schedule[-1]["e"] > 15:
-                data['before_school'] = True
-                time.sleep(0.5)
-                continue
+                during_school.clear()
             else:
-                data['before_school'] = False
+                during_school.set()
 
             for per in curr_schedule:
                 if per["s"] <= curr_minutes <= per["e"]:
-                    data['is_passing'] = False
+                    is_passing.clear()
                     break
+            else:
+                is_passing.set()
+
         except IndexError:
             if not warn_message_sent:  # Perhaps a better approach for only sending these logs once exists, but this works
                 print('[WARN] IndexError - Function most likely invoked on the weekend')

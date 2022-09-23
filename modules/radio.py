@@ -2,7 +2,7 @@ import time
 from os import walk
 from random import randrange
 from pygame import mixer
-from schedule import data
+from schedule import is_passing, during_school
 
 
 (_, _, filenames) = next(walk('../music'))
@@ -32,7 +32,7 @@ def main():
     # Tick every 1/2 second
     while True:
         # If it's before or after school, stop the music
-        if data['before_school']:
+        if not during_school.is_set():
             if mixer.music.get_busy():
                 mixer.music.fadeout(7500)  # Fade out over 7.5 seconds
             time.sleep(0.5)
@@ -41,7 +41,7 @@ def main():
         if not mixer.music.get_busy():  # If the music player is idle, queue another track
             curr = play_random_song_from_queue(curr)
         # Adjust right float as needed to determine how quiet it should be during class
-        mixer.music.set_volume(1.0 if data['is_passing'] else 0.1)
+        mixer.music.set_volume(1.0 if is_passing.is_set() else 0.1)
 
         time.sleep(0.5)
 
