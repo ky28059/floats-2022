@@ -35,8 +35,8 @@ def main():
         if not during_school.is_set():
             if mixer.music.get_busy():
                 mixer.music.fadeout(7500)  # Fade out over 7.5 seconds
-            time.sleep(0.5)
-            continue
+            # Wait for school to begin
+            during_school.wait()
 
         if not mixer.music.get_busy():  # If the music player is idle, queue another track
             curr = play_random_song_from_queue(curr)

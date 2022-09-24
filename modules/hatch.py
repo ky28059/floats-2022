@@ -27,13 +27,19 @@ def run_talon(p: float) -> None:
     talon.ChangeDutyCycle(convert_duty_cycle(p))
 
 
+# Stops the PWM signal and cleans up GPIO.
+def cleanup_io() -> None:
+    talon.stop()
+    GPIO.cleanup()
+
+
 def main():
     talon.start(convert_duty_cycle(0))
     try:
         while True:
             # Wait for school and passing period before running
-            is_passing.wait()
             during_school.wait()
+            is_passing.wait()
 
             # Run forward and wait for the forward limit switch to trip
             run_talon(0.3)
@@ -53,10 +59,12 @@ def main():
             run_talon(0)
             time.sleep(3)
 
-    # Clean up and exit on keyboard interrupt
+    # Exit loop on keyboard interrupt
     except KeyboardInterrupt:
-        talon.stop()
-        GPIO.cleanup()
+        pass
+
+    # Clean up and exit
+    cleanup_io()
 
 
 if __name__ == '__main__':
