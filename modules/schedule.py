@@ -1,4 +1,4 @@
-from threading import Thread, Event
+from multiprocessing import Process, Event
 import time
 from datetime import datetime
 import json
@@ -48,6 +48,6 @@ def update_schedule_data():
         time.sleep(0.5)
 
 
-# Automatically start auto-updating background thread on import
-thread = Thread(target=update_schedule_data, daemon=True)
-thread.start()
+# Automatically start auto-updating background process on import
+process = Process(target=update_schedule_data, daemon=True)
+process.start()

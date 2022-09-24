@@ -27,12 +27,6 @@ def run_talon(p: float) -> None:
     talon.ChangeDutyCycle(convert_duty_cycle(p))
 
 
-# Stops the PWM signal and cleans up GPIO.
-def cleanup_io() -> None:
-    talon.stop()
-    GPIO.cleanup()
-
-
 def main():
     talon.start(convert_duty_cycle(0))
     try:
@@ -64,7 +58,8 @@ def main():
         pass
 
     # Clean up and exit
-    cleanup_io()
+    talon.stop()
+    GPIO.cleanup()
 
 
 if __name__ == '__main__':

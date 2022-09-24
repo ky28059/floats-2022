@@ -1,15 +1,16 @@
-from threading import Thread
-from modules.hatch import main as hatch, cleanup_io
+from multiprocessing import Process
+from modules.hatch import main as hatch
 from modules.radio import main as radio
 
-hatch_thread = Thread(target=hatch, daemon=True)
-radio_thread = Thread(target=radio, daemon=True)
+hatch_process = Process(target=hatch, daemon=True)
+radio_process = Process(target=radio, daemon=True)
 
-hatch_thread.start()
-radio_thread.start()
+hatch_process.start()
+radio_process.start()
 
 try:
     while True:
         pass
 except KeyboardInterrupt:
-    cleanup_io()
+    hatch_process.join()
+    radio_process.join()
