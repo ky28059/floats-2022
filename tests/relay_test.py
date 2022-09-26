@@ -10,6 +10,6 @@ if __name__ == '__main__':
     GPIO.output([FM_RELAY_PIN, LED_RELAY_PIN], GPIO.HIGH)
     time.sleep(5)
 
-    print("Stopping relay.")
+    print("Stopping relays.")
     GPIO.output([FM_RELAY_PIN, LED_RELAY_PIN], GPIO.LOW)
     GPIO.cleanup()
