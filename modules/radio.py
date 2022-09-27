@@ -2,7 +2,7 @@ import time
 from os import walk
 from random import randrange
 from pygame import mixer
-from schedule import is_passing, during_school
+from multiprocessing import Event
 
 
 (_, _, filenames) = next(walk('../music'))
@@ -26,7 +26,7 @@ def play_random_song_from_queue(curr: str) -> str:
     return curr
 
 
-def main():
+def radio(during_school: Event, is_passing: Event):
     curr = None  # The filename of the currently playing song, so that it doesn't get played twice
 
     # Tick every 1/2 second
@@ -47,4 +47,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    from schedule import during_school, is_passing, schedule_process
+    schedule_process.start()
+    radio(during_school, is_passing)

@@ -15,7 +15,7 @@ is_passing.set()
 
 
 # Continually updates the schedule data, ticking every 0.5 seconds and warning on index errors.
-def update_schedule_data():
+def update_schedule_data(during_school: Event, is_passing: Event):
     warn_message_sent = False
 
     while True:
@@ -48,6 +48,6 @@ def update_schedule_data():
         time.sleep(0.5)
 
 
-# Automatically start auto-updating background process on import
-process = Process(target=update_schedule_data, daemon=True)
-process.start()
+# Process to auto-update the `during_school` and `is_passing` events.
+# All modules relying on schedule need to import this and call `.start()` to have updating schedule info.
+schedule_process = Process(target=update_schedule_data, args=(during_school, is_passing), daemon=True)

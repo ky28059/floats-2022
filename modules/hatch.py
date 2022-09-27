@@ -5,7 +5,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 import time
 import RPi.GPIO as GPIO
-from schedule import is_passing, during_school
+from multiprocessing import Event
 from constants import TALON_PIN, FORWARD_LS_PIN, BACKWARD_LS_PIN, FM_RELAY_PIN, LED_RELAY_PIN
 
 CYCLE_TIME = 10.0  # ms [2.9, 100]
@@ -32,7 +32,7 @@ def run_talon(p: float) -> None:
     talon.ChangeDutyCycle(convert_duty_cycle(p))
 
 
-def main():
+def hatch(during_school: Event, is_passing: Event):
     talon.start(convert_duty_cycle(0))
     try:
         while True:
@@ -68,4 +68,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    from schedule import during_school, is_passing, schedule_process
+    schedule_process.start()
+    hatch(during_school, is_passing)
