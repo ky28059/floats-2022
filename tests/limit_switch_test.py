@@ -23,4 +23,5 @@ if __name__ == '__main__':
         while True:
             pass
     except KeyboardInterrupt:
+        print("Test finished, cleaning up.")
         GPIO.cleanup()

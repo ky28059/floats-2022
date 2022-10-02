@@ -35,10 +35,13 @@ if __name__ == '__main__':
     print("Starting TalonSRX PWM signal.")
     talon.start(convert_duty_cycle(0))
 
-    for p in range(5, -6, -1):
-        print(f"Running Talon at {p / 10.0} power.")
-        run_talon(p / 10.0)
-        time.sleep(1.5)
+    try:
+        for p in range(5, -6, -1):
+            print(f"Running Talon at {p / 10.0} power.")
+            run_talon(p / 10.0)
+            time.sleep(1.5)
+    except KeyboardInterrupt:
+        pass
 
     print("Test finished, cleaning up.")
     talon.stop()

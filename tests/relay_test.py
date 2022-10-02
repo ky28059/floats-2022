@@ -13,7 +13,11 @@ GPIO.setup([FM_RELAY_PIN, LED_RELAY_PIN], GPIO.OUT)
 if __name__ == '__main__':
     print(f"Starting relay on pins {FM_RELAY_PIN} and {LED_RELAY_PIN}.")
     GPIO.output([FM_RELAY_PIN, LED_RELAY_PIN], GPIO.HIGH)
-    time.sleep(5)
+
+    try:
+        time.sleep(5)
+    except KeyboardInterrupt:
+        pass
 
     print("Stopping relays.")
     GPIO.output([FM_RELAY_PIN, LED_RELAY_PIN], GPIO.LOW)
