@@ -5,10 +5,9 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 import time
 import RPi.GPIO as GPIO
-from constants import TALON_PIN
+from constants import TALON_PIN, CYCLE_TIME, PULSE_FREQUENCY, MAX_MS, MID_MS
 
-CYCLE_TIME = 10.0  # ms [2.9, 100]
-PULSE_FREQUENCY = 1000.0 / CYCLE_TIME  # Hz (up to 100Hz)
+STEP_SECONDS = 0.25  # How long in seconds to wait between each step in power
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(TALON_PIN, GPIO.OUT)
@@ -22,7 +21,7 @@ talon = GPIO.PWM(TALON_PIN, PULSE_FREQUENCY)
 # TODO: abstraction?
 def convert_duty_cycle(p: float) -> float:
     constrained = min(1.0, max(-1.0, p))
-    return ((constrained * 0.5) + 1.5) / CYCLE_TIME * 100.0
+    return ((constrained * (MAX_MS - MID_MS)) + MID_MS) / CYCLE_TIME * 100.0
 
 
 # Runs the talon at a percent output with PWM duty cycle.
@@ -36,10 +35,23 @@ if __name__ == '__main__':
     talon.start(convert_duty_cycle(0))
 
     try:
-        for p in range(5, -6, -1):
+        # Sweep from 0 -> 1.0
+        for p in range(1, 11, 1):
             print(f"Running Talon at {p / 10.0} power.")
             run_talon(p / 10.0)
-            time.sleep(1.5)
+            time.sleep(STEP_SECONDS)
+
+        # Sweep from 1.0 -> -1.0
+        for p in range(10, -11, -1):
+            print(f"Running Talon at {p / 10.0} power.")
+            run_talon(p / 10.0)
+            time.sleep(STEP_SECONDS)
+
+        # Sweep from -1.0 -> 0
+        for p in range(-10, 1, 1):
+            print(f"Running Talon at {p / 10.0} power.")
+            run_talon(p / 10.0)
+            time.sleep(STEP_SECONDS)
     except KeyboardInterrupt:
         pass
 

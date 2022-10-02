@@ -6,10 +6,8 @@ sys.path.append(str(Path(__file__).parent.parent))
 import time
 import RPi.GPIO as GPIO
 from multiprocessing import Event
-from constants import TALON_PIN, FORWARD_LS_PIN, BACKWARD_LS_PIN, FM_RELAY_PIN, LED_RELAY_PIN
-
-CYCLE_TIME = 10.0  # ms [2.9, 100]
-PULSE_FREQUENCY = 1000.0 / CYCLE_TIME  # Hz (up to 100Hz)
+from constants import TALON_PIN, FORWARD_LS_PIN, BACKWARD_LS_PIN, FM_RELAY_PIN, LED_RELAY_PIN, \
+                      CYCLE_TIME, PULSE_FREQUENCY, MAX_MS, MID_MS
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(TALON_PIN, GPIO.OUT)
@@ -24,7 +22,7 @@ talon = GPIO.PWM(TALON_PIN, PULSE_FREQUENCY)
 # Converts more standard [-1.0, 1.0] percent output values to talon duty cycle percentages [0.0, 100.0].
 def convert_duty_cycle(p: float) -> float:
     constrained = min(1.0, max(-1.0, p))
-    return ((constrained * 0.5) + 1.5) / CYCLE_TIME * 100.0
+    return ((constrained * (MAX_MS - MID_MS)) + MID_MS) / CYCLE_TIME * 100.0
 
 
 # Runs the talon at a percent output with PWM duty cycle.
