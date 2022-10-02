@@ -50,8 +50,9 @@ This year's music playlist can be found here: https://www.youtube.com/playlist?l
 `/tests` contains test scripts to unit-test specific components of the float. The following is a list of tests and what
 they test for:
 
-| Test                   | Description                                                                                                                                                                                        |
-|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `limit_switch_test.py` | Tests reading limit switch input with the Raspberry Pi. This test starts a loop that logs to the console every rising edge it detects over the two configured limit switch pins in `constants.py`. |
-| `motor_test.py`        | Tests running a TalonSRX with PWM signal from the Raspberry Pi's GPIO pins. This test runs the talon forwards for 2 seconds, backwards for 2 seconds, then turns it off.                           |
-| `relay_test.py`        | Tests controlling relays with the Raspberry Pi. This test activates both relays for 5 seconds, then turns them off again. <!-- wording -->                                                         |                                                                                                                                                                       
+| Test                         | Description                                                                                                                                                                                        |
+|------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `relay_test.py`              | Tests controlling relays with the Raspberry Pi. This test activates both relays for 5 seconds, then turns them off again. <!-- wording -->                                                         |
+| `motor_test.py`              | Tests running a TalonSRX with PWM signal from the Raspberry Pi's GPIO pins. This test sweeps the motor from `0.5` power forwards to `0.5` power backwards.                                         |
+| `limit_switch_test.py`       | Tests reading limit switch input with the Raspberry Pi. This test starts a loop that logs to the console every rising edge it detects over the two configured limit switch pins in `constants.py`. |
+| `limit_switch_motor_test.py` | Tests controlling a Talon with limit switch input. This test logs every rising edge it detects on the two limit switch pins, toggling the motor forwards and backwards on limit switch hits.       |
