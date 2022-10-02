@@ -7,7 +7,7 @@ import time
 import RPi.GPIO as GPIO
 from constants import TALON_PIN
 
-CYCLE_TIME = 2.9  # ms [2.9, 100]
+CYCLE_TIME = 10.0  # ms [2.9, 100]
 PULSE_FREQUENCY = 1000.0 / CYCLE_TIME  # Hz (up to 100Hz)
 
 GPIO.setmode(GPIO.BCM)
@@ -35,19 +35,10 @@ if __name__ == '__main__':
     print("Starting TalonSRX PWM signal.")
     talon.start(convert_duty_cycle(0))
 
-    for p in range(1, 4):
+    for p in range(5, -6, -1):
         print(f"Running Talon at {p / 10.0} power.")
         run_talon(p / 10.0)
-        time.sleep(1)
-
-    print("Stopping talon (0 power).")
-    run_talon(0)
-    time.sleep(1)
-
-    for p in range(-1, -4, -1):
-        print(f"Running Talon at {p / 10.0} power.")
-        run_talon(p / 10.0)
-        time.sleep(1)
+        time.sleep(1.5)
 
     print("Test finished, cleaning up.")
     talon.stop()

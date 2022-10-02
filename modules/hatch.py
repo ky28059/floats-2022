@@ -8,7 +8,7 @@ import RPi.GPIO as GPIO
 from multiprocessing import Event
 from constants import TALON_PIN, FORWARD_LS_PIN, BACKWARD_LS_PIN, FM_RELAY_PIN, LED_RELAY_PIN
 
-CYCLE_TIME = 2.9  # ms [2.9, 100]
+CYCLE_TIME = 10.0  # ms [2.9, 100]
 PULSE_FREQUENCY = 1000.0 / CYCLE_TIME  # Hz (up to 100Hz)
 
 GPIO.setmode(GPIO.BCM)
