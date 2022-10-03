@@ -1,10 +1,13 @@
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent.parent))
+
 import time
 import RPi.GPIO as GPIO
-from schedule import is_passing, during_school
-from constants import TALON_PIN, FORWARD_LS_PIN, BACKWARD_LS_PIN, FM_RELAY_PIN, LED_RELAY_PIN
-
-CYCLE_TIME = 10.0  # ms [2.9, 100]
-PULSE_FREQUENCY = 1000.0 / CYCLE_TIME  # Hz (up to 100Hz)
+from multiprocessing import Event
+from constants import TALON_PIN, FORWARD_LS_PIN, BACKWARD_LS_PIN, FM_RELAY_PIN, LED_RELAY_PIN, \
+                      CYCLE_TIME, PULSE_FREQUENCY, MAX_MS, MID_MS
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(TALON_PIN, GPIO.OUT)
@@ -19,7 +22,7 @@ talon = GPIO.PWM(TALON_PIN, PULSE_FREQUENCY)
 # Converts more standard [-1.0, 1.0] percent output values to talon duty cycle percentages [0.0, 100.0].
 def convert_duty_cycle(p: float) -> float:
     constrained = min(1.0, max(-1.0, p))
-    return ((constrained * 0.5) + 1.5) / CYCLE_TIME
+    return ((constrained * (MAX_MS - MID_MS)) + MID_MS) / CYCLE_TIME * 100.0
 
 
 # Runs the talon at a percent output with PWM duty cycle.
@@ -27,13 +30,7 @@ def run_talon(p: float) -> None:
     talon.ChangeDutyCycle(convert_duty_cycle(p))
 
 
-# Stops the PWM signal and cleans up GPIO.
-def cleanup_io() -> None:
-    talon.stop()
-    GPIO.cleanup()
-
-
-def main():
+def hatch(during_school: Event, is_passing: Event):
     talon.start(convert_duty_cycle(0))
     try:
         while True:
@@ -64,8 +61,11 @@ def main():
         pass
 
     # Clean up and exit
-    cleanup_io()
+    talon.stop()
+    GPIO.cleanup()
 
 
 if __name__ == '__main__':
-    main()
+    from schedule import during_school, is_passing, schedule_process
+    schedule_process.start()
+    hatch(during_school, is_passing)

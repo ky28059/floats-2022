@@ -3,14 +3,12 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent))
 
-import time
 import RPi.GPIO as GPIO
-from constants import TALON_PIN, CYCLE_TIME, PULSE_FREQUENCY, MAX_MS, MID_MS
-
-STEP_SECONDS = 0.25  # How long in seconds to wait between each step in power
+from constants import TALON_PIN, FORWARD_LS_PIN, BACKWARD_LS_PIN, CYCLE_TIME, PULSE_FREQUENCY, MAX_MS, MID_MS
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(TALON_PIN, GPIO.OUT)
+GPIO.setup([FORWARD_LS_PIN, BACKWARD_LS_PIN], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 print(f"Running with frequency={PULSE_FREQUENCY}Hz, duty cycle min={1.0 / CYCLE_TIME}, max={2.0 / CYCLE_TIME}")
 
@@ -35,26 +33,16 @@ if __name__ == '__main__':
     talon.start(convert_duty_cycle(0))
 
     try:
-        # Sweep from 0 -> 1.0
-        for p in range(1, 11, 1):
-            print(f"Running Talon at {p / 10.0} power.")
-            run_talon(p / 10.0)
-            time.sleep(STEP_SECONDS)
+        while True:
+            print(f"Running Talon forwards until rising edge on {FORWARD_LS_PIN}.")
+            run_talon(0.5)
+            GPIO.wait_for_edge(FORWARD_LS_PIN, GPIO.RISING)
 
-        # Sweep from 1.0 -> -1.0
-        for p in range(10, -11, -1):
-            print(f"Running Talon at {p / 10.0} power.")
-            run_talon(p / 10.0)
-            time.sleep(STEP_SECONDS)
+            print(f"Running Talon backwards until rising edge on {BACKWARD_LS_PIN}.")
+            run_talon(-0.5)
+            GPIO.wait_for_edge(BACKWARD_LS_PIN, GPIO.RISING)
 
-        # Sweep from -1.0 -> 0
-        for p in range(-10, 1, 1):
-            print(f"Running Talon at {p / 10.0} power.")
-            run_talon(p / 10.0)
-            time.sleep(STEP_SECONDS)
     except KeyboardInterrupt:
-        pass
-
-    print("Test finished, cleaning up.")
-    talon.stop()
-    GPIO.cleanup()
+        print("Test finished, cleaning up.")
+        talon.stop()
+        GPIO.cleanup()

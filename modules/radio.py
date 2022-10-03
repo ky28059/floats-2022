@@ -2,10 +2,12 @@ import time
 from os import walk
 from random import randrange
 from pygame import mixer
-from schedule import is_passing, during_school
+from multiprocessing import Event
+from pathlib import Path
 
+music_dir = f'{Path(__file__).parent.parent}/music'
 
-(_, _, filenames) = next(walk('../music'))
+(_, _, filenames) = next(walk(music_dir))
 queue = []  # An array of filenames that houses the remaining songs to play
 mixer.init()
 
@@ -18,7 +20,7 @@ def play_random_song_from_queue(curr: str) -> str:
     index = randrange(len(queue))
 
     print(f"Playing {queue[index]}: position {index + 1} of {len(queue)}")
-    mixer.music.load('../music/' + queue[index])
+    mixer.music.load(f'{music_dir}/{queue[index]}')
     mixer.music.play()
 
     curr = queue[index]
@@ -26,7 +28,7 @@ def play_random_song_from_queue(curr: str) -> str:
     return curr
 
 
-def main():
+def radio(during_school: Event, is_passing: Event):
     curr = None  # The filename of the currently playing song, so that it doesn't get played twice
 
     # Tick every 1/2 second
@@ -47,4 +49,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    from schedule import during_school, is_passing, schedule_process
+    schedule_process.start()
+    radio(during_school, is_passing)

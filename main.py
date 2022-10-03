@@ -1,15 +1,19 @@
-from threading import Thread
-from modules.hatch import main as hatch, cleanup_io
-from modules.radio import main as radio
+from multiprocessing import Process
+from modules.hatch import hatch
+from modules.radio import radio
+from modules.schedule import during_school, is_passing, schedule_process
 
-hatch_thread = Thread(target=hatch, daemon=True)
-radio_thread = Thread(target=radio, daemon=True)
+hatch_process = Process(target=hatch, args=(during_school, is_passing), daemon=True)
+radio_process = Process(target=radio, args=(during_school, is_passing), daemon=True)
 
-hatch_thread.start()
-radio_thread.start()
+if __name__ == '__main__':
+    schedule_process.start()
+    hatch_process.start()
+    radio_process.start()
 
-try:
-    while True:
-        pass
-except KeyboardInterrupt:
-    cleanup_io()
+    try:
+        while True:
+            pass
+    except KeyboardInterrupt:
+        hatch_process.join()
+        radio_process.join()
