@@ -23,10 +23,14 @@ graph TD;
     E1-.->Radio;
 ```
 
+Last year's floats code can be found [here](https://github.com/ky28059/hoco-radio-2021).
+
 ### Overall structure
-This year's float code utilizes `multiprocessing` to run several submodules in parallel. Individual modules are located in `/modules`,
+This year's code utilizes `multiprocessing` to run several submodules in parallel. Individual modules are located in `/modules`,
 and (with the exception of `schedule.py`) are designed to be able to run by themselves. To run a single module, run its
 corresponding script in `/modules`. To run all modules simultaneously with multiprocessing, run `main.py`.
+
+All scripts were designed to run on a Raspberry Pi with the newest OS image and Python 3.9.2.
 
 ### Schedule
 The schedule module parses and updates internal schedule data states, using multiprocessing `Event`s to alert other
@@ -38,9 +42,12 @@ used on the 2021 float. The script no longer checks the `MM-DD` formatted date, 
 the schedule.
 
 ### Radio
-The radio module maintains a similar architecture to last year's `radio2.py` script ([`hoco-radio-2021`](https://github.com/ky28059/hoco-radio-2021)),
-reading music files from `./music` and playing them in a tick-based loop. The script begins playing music 45 minutes 
-before school, sets volume to 10% during class time, and stops playing music 15 minutes after school.
+```bash
+python3 ./modules/radio.py
+```
+The radio module maintains a similar architecture to last year's `radio2.py`, reading `.wav` files from `./music` and 
+playing them in a tick-based loop. The script begins playing music 45 minutes before school, sets volume to 10% during 
+class time, and stops playing music 15 minutes after school.
 
 This year's music playlist can be found here: https://www.youtube.com/playlist?list=PL7WwPfnTGk9HsZMm-G_JlF1buJ8Nit32S
 
@@ -55,4 +62,4 @@ they test for:
 | `relay_test.py`              | Tests controlling relays with the Raspberry Pi. This test activates both relays for 5 seconds, then turns them off again. <!-- wording -->                                                         |
 | `motor_test.py`              | Tests running a TalonSRX with PWM signal from the Raspberry Pi's GPIO pins. This test sweeps the motor from `0` to full forward power, then to full reverse power, then back to `0`.               |
 | `limit_switch_test.py`       | Tests reading limit switch input with the Raspberry Pi. This test starts a loop that logs to the console every rising edge it detects over the two configured limit switch pins in `constants.py`. |
-| `limit_switch_motor_test.py` | Tests controlling a Talon with limit switch input. This test logs every rising edge it detects on the two limit switch pins, toggling the motor forwards and backwards on limit switch hits.       |
+| `limit_switch_motor_test.py` | Tests controlling a TalonSRX with limit switch input. This test runs the talon at `0.5` power, toggling it between forward and reverse on limit switch hits.                                       |
