@@ -3,9 +3,11 @@ from os import walk
 from random import randrange
 from pygame import mixer
 from multiprocessing import Event
+from pathlib import Path
 
+music_dir = f'{Path(__file__).parent.parent}/music'
 
-(_, _, filenames) = next(walk('../music'))
+(_, _, filenames) = next(walk(music_dir))
 queue = []  # An array of filenames that houses the remaining songs to play
 mixer.init()
 
@@ -18,7 +20,7 @@ def play_random_song_from_queue(curr: str) -> str:
     index = randrange(len(queue))
 
     print(f"Playing {queue[index]}: position {index + 1} of {len(queue)}")
-    mixer.music.load('../music/' + queue[index])
+    mixer.music.load(f'{music_dir}/{queue[index]}')
     mixer.music.play()
 
     curr = queue[index]

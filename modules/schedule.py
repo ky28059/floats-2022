@@ -2,8 +2,9 @@ from multiprocessing import Process, Event
 import time
 from datetime import datetime
 import json
+from pathlib import Path
 
-with open('../schedule.json') as f:
+with open(f'{Path(__file__).parent.parent}/schedule.json') as f:
     schedules = json.load(f)
 
 during_school = Event()  # Whether it is after the start or before the end of the school day
