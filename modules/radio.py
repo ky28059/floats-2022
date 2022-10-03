@@ -31,21 +31,24 @@ def play_random_song_from_queue(curr: str) -> str:
 def radio(during_school: Event, is_passing: Event):
     curr = None  # The filename of the currently playing song, so that it doesn't get played twice
 
-    # Tick every 1/2 second
-    while True:
-        # If it's before or after school, stop the music
-        if not during_school.is_set():
-            if mixer.music.get_busy():
-                mixer.music.fadeout(7500)  # Fade out over 7.5 seconds
-            # Wait for school to begin
-            during_school.wait()
+    try:
+        while True:
+            # If it's before or after school, stop the music
+            if not during_school.is_set():
+                if mixer.music.get_busy():
+                    mixer.music.fadeout(7500)  # Fade out over 7.5 seconds
+                # Wait for school to begin
+                during_school.wait()
 
-        if not mixer.music.get_busy():  # If the music player is idle, queue another track
-            curr = play_random_song_from_queue(curr)
-        # Adjust right float as needed to determine how quiet it should be during class
-        mixer.music.set_volume(1.0 if is_passing.is_set() else 0.1)
+            if not mixer.music.get_busy():  # If the music player is idle, queue another track
+                curr = play_random_song_from_queue(curr)
+            # Adjust right float as needed to determine how quiet it should be during class
+            mixer.music.set_volume(1.0 if is_passing.is_set() else 0.1)
 
-        time.sleep(0.5)
+            time.sleep(0.5)
+
+    except KeyboardInterrupt:
+        mixer.quit()
 
 
 if __name__ == '__main__':
