@@ -16,7 +16,7 @@ GPIO.set_PWM_range(TALON_PIN, PWM_RANGE)
 print(f"Running with frequency={PULSE_FREQUENCY}Hz, duty cycle min={1.0 / CYCLE_TIME}, max={2.0 / CYCLE_TIME}")
 
 
-# Converts more standard [-1.0, 1.0] percent output values to a pigpio duty cycle range.
+# Converts [-1.0, 1.0] percent output values to a pigpio duty cycle range.
 # TODO: abstraction?
 def convert_duty_cycle(p: float) -> float:
     constrained = min(1.0, max(-1.0, p))

@@ -19,7 +19,7 @@ forward_ls = Event()
 backward_ls = Event()
 
 
-# Converts more standard [-1.0, 1.0] percent output values to talon duty cycle percentages [0.0, 100.0].
+# Converts [-1.0, 1.0] percent output values to talon duty cycle percentages [0.0, 100.0].
 # TODO: abstraction?
 def convert_duty_cycle(p: float) -> float:
     constrained = min(1.0, max(-1.0, p))
