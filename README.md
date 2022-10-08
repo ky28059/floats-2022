@@ -60,8 +60,21 @@ waiting 3 seconds before turning the LEDs and fog machine off and closing the ha
 input to determine the position of the hatch, timing out after 5 seconds in case of limit switch failure. The hatch only
 runs during passing period, 45 minutes before school, and 15 minutes after school.
 
-`hatch.py` uses `RPi.GPIO` software PWM, and as such is inconsistent at controlling the motor (more so the more CPU is 
-being taken by other tasks, such as the radio or video).
+`hatch.py` uses `RPi.GPIO` software PWM, and as such is inconsistent at controlling the motor (especially when CPU is 
+being taken by other tasks, such as the radio or video). To run the hatch with hardware PWM, see the next section.
+
+### Hatch (with hardware PWM)
+```bash
+python3 ./modules/hatch2.py
+```
+`hatch2.py` runs the same logic as `hatch.py`, but uses `pigpio` hardware PWM instead of `RPi.GPIO`. `hatch2` requires
+the `pigpio` daemon running with
+```bash
+sudo pigpiod
+```
+or `sudo pigpiod -g` in a different terminal window if it needs to be terminated easily. Because `pigpio` uses the hardware
+PWM peripheral to generate PWM signal, it cannot be run with `radio.py`, which uses the hardware PWM peripheral to play 
+audio.
 
 ### Tests
 `/tests` contains test scripts to unit-test specific components of the float. The following is a list of tests and what
@@ -78,8 +91,4 @@ they test for:
 | `hardware_limit_switch_test.py`       | `limit_switch_test.py`, but using `pigpio` instead of `RPi.GPIO`.                                                                                                                                  |
  | `hardware_limit_switch_motor_test.py` | `limit_switch_motor_test.py`, but using `pigpio` instead of `RPi.GPIO`.                                                                                                                            |
 
-All hardware tests require the `pigpio` daemon process running with
-```bash
-sudo pigpiod -g
-```
-(or `sudo pigpiod` if you want to run it as a background process).
+All hardware tests require running the `pigpio` daemon.
