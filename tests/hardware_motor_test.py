@@ -15,17 +15,12 @@ GPIO.set_mode(TALON_PIN, pigpio.ALT5)
 print(f"Running with frequency={PULSE_FREQUENCY}Hz, duty cycle min={1.0 / CYCLE_TIME}, max={2.0 / CYCLE_TIME}")
 
 
-# Converts [-1.0, 1.0] percent output values to a pigpio duty cycle range.
-# TODO: abstraction?
-def convert_duty_cycle(p: float) -> float:
-    constrained = min(1.0, max(-1.0, p))
-    return int(((constrained * (MAX_MS - MID_MS)) + MID_MS) / CYCLE_TIME * 1000000)
-
-
-# Runs the talon at a percent output with PWM duty cycle.
+# Runs the talon at a [-1.0, 1.0] percent output with PWM duty cycle.
 # TODO: abstraction?
 def run_talon(p: float) -> None:
-    GPIO.hardware_PWM(TALON_PIN, int(PULSE_FREQUENCY), convert_duty_cycle(p))
+    constrained = min(1.0, max(-1.0, p))
+    duty_cycle = ((constrained * (MAX_MS - MID_MS)) + MID_MS) / CYCLE_TIME * 1000000
+    GPIO.hardware_PWM(TALON_PIN, int(PULSE_FREQUENCY), int(duty_cycle))
 
 
 if __name__ == '__main__':
