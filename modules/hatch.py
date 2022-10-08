@@ -18,6 +18,9 @@ print(f"Running with frequency={PULSE_FREQUENCY}Hz, duty cycle min={1.0 / CYCLE_
 
 talon = GPIO.PWM(TALON_PIN, PULSE_FREQUENCY)
 
+forward_ls = Event()
+backward_ls = Event()
+
 
 # Converts more standard [-1.0, 1.0] percent output values to talon duty cycle percentages [0.0, 100.0].
 def convert_duty_cycle(p: float) -> float:
@@ -30,8 +33,18 @@ def run_talon(p: float) -> None:
     talon.ChangeDutyCycle(convert_duty_cycle(p))
 
 
+# Waits for a rising edge on the given limit switch, timing out after 5 seconds.
+def wait_for_edge(ls: Event):
+    ls.clear()
+    ls.wait(timeout=5.0)
+
+
 def hatch(during_school: Event, is_passing: Event):
+    GPIO.add_event_detect(FORWARD_LS_PIN, GPIO.RISING, callback=lambda c: forward_ls.set())
+    GPIO.add_event_detect(BACKWARD_LS_PIN, GPIO.RISING, callback=lambda c: backward_ls.set())
+
     talon.start(convert_duty_cycle(0))
+
     try:
         while True:
             # Wait for school and passing period before running
@@ -41,7 +54,7 @@ def hatch(during_school: Event, is_passing: Event):
             # Run forward and wait for the forward limit switch to trip
             run_talon(0.3)
             GPIO.output([FM_RELAY_PIN, LED_RELAY_PIN], GPIO.HIGH)  # Turn on the fog machine and LEDs
-            GPIO.wait_for_edge(FORWARD_LS_PIN, GPIO.RISING, timeout=5000)
+            wait_for_edge(forward_ls)
 
             # Stop the motor when hit and keep the hatch open for 3 seconds
             run_talon(0)
@@ -50,7 +63,7 @@ def hatch(during_school: Event, is_passing: Event):
             # Run backwards and wait for the backwards limit switch to trip
             run_talon(-0.3)
             GPIO.output([FM_RELAY_PIN, LED_RELAY_PIN], GPIO.LOW)  # Turn off the fog machine and LEDs
-            GPIO.wait_for_edge(BACKWARD_LS_PIN, GPIO.RISING, timeout=5000)
+            wait_for_edge(backward_ls)
 
             # Stop the motor when hit and keep the hatch closed for 3 seconds
             run_talon(0)

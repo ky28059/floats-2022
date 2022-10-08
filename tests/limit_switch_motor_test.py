@@ -39,8 +39,8 @@ def wait_for_edge(ls: Event):
 
 
 if __name__ == '__main__':
-    GPIO.add_event_detect(FORWARD_LS_PIN, GPIO.RISING, callback=forward_ls.set)
-    GPIO.add_event_detect(BACKWARD_LS_PIN, GPIO.RISING, callback=backward_ls.set)
+    GPIO.add_event_detect(FORWARD_LS_PIN, GPIO.RISING, callback=lambda c: forward_ls.set())
+    GPIO.add_event_detect(BACKWARD_LS_PIN, GPIO.RISING, callback=lambda c: backward_ls.set())
 
     print("Starting TalonSRX PWM signal.")
     talon.start(convert_duty_cycle(0))
