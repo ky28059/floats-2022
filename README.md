@@ -51,22 +51,33 @@ class time, and stops playing music 15 minutes after school.
 
 This year's music playlist can be found here: https://www.youtube.com/playlist?list=PL7WwPfnTGk9HsZMm-G_JlF1buJ8Nit32S
 
-<!-- ### Hatch -->
+### Hatch
+```bash
+python3 ./modules/hatch.py
+```
+The hatch module runs the hatch mechanism on the float. It turns on the LEDs and fog machine and runs the motor forward,
+waiting 3 seconds before turning the LEDs and fog machine off and closing the hatch again. The module reads limit switch
+input to determine the position of the hatch, timing out after 5 seconds in case of limit switch failure. The hatch only
+runs during passing period, 45 minutes before school, and 15 minutes after school.
+
+`hatch.py` uses `RPi.GPIO` software PWM, and as such is inconsistent at controlling the motor (more so the more CPU is 
+being taken by other tasks, such as the radio or video).
 
 ### Tests
 `/tests` contains test scripts to unit-test specific components of the float. The following is a list of tests and what
 they test for:
 
-| Test                            | Description                                                                                                                                                                                        |
-|---------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `relay_test.py`                 | Tests controlling relays with the Raspberry Pi. This test activates both relays for 5 seconds, then turns them off again. <!-- wording -->                                                         |
-| `motor_test.py`                 | Tests running a TalonSRX with PWM signal from the Raspberry Pi's GPIO pins. This test sweeps the motor from `0` to full forward power, then to full reverse power, then back to `0`.               |
-| `limit_switch_test.py`          | Tests reading limit switch input with the Raspberry Pi. This test starts a loop that logs to the console every rising edge it detects over the two configured limit switch pins in `constants.py`. |
-| `limit_switch_motor_test.py`    | Tests controlling a TalonSRX with limit switch input. This test runs the talon at `0.5` power, toggling it between forward and reverse on limit switch hits.                                       |
-| `hardware_relay_test.py`        | `relay_test.py`, but using `pigpio` instead of `RPi.GPIO`.                                                                                                                                         |
-| `hardware_motor_test.py`        | `motor_test.py`, but using `pigpio` instead of `RPi.GPIO` (hardware instead of software PWM).                                                                                                      |
-| `hardware_limit_switch_test.py` | `limit_switch_test.py`, but using `pigpio` instead of `RPi.GPIO`.                                                                                                                                  |
- 
+| Test                                  | Description                                                                                                                                                                                        |
+|---------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `relay_test.py`                       | Tests controlling relays with the Raspberry Pi. This test activates both relays for 5 seconds, then turns them off again. <!-- wording -->                                                         |
+| `motor_test.py`                       | Tests running a TalonSRX with PWM signal from the Raspberry Pi's GPIO pins. This test sweeps the motor from `0` to full forward power, then to full reverse power, then back to `0`.               |
+| `limit_switch_test.py`                | Tests reading limit switch input with the Raspberry Pi. This test starts a loop that logs to the console every rising edge it detects over the two configured limit switch pins in `constants.py`. |
+| `limit_switch_motor_test.py`          | Tests controlling a TalonSRX with limit switch input. This test runs the talon at `0.5` power, toggling it between forward and reverse on limit switch hits.                                       |
+| `hardware_relay_test.py`              | `relay_test.py`, but using `pigpio` instead of `RPi.GPIO`.                                                                                                                                         |
+| `hardware_motor_test.py`              | `motor_test.py`, but using `pigpio` instead of `RPi.GPIO` (hardware instead of software PWM).                                                                                                      |
+| `hardware_limit_switch_test.py`       | `limit_switch_test.py`, but using `pigpio` instead of `RPi.GPIO`.                                                                                                                                  |
+ | `hardware_limit_switch_motor_test.py` | `limit_switch_motor_test.py`, but using `pigpio` instead of `RPi.GPIO`.                                                                                                                            |
+
 All hardware tests require the `pigpio` daemon process running with
 ```bash
 sudo pigpiod -g
