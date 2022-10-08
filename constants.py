@@ -5,9 +5,8 @@ FM_RELAY_PIN = 23
 LED_RELAY_PIN = 24
 
 CYCLE_TIME = 10  # ms [2.9, 100]
-PULSE_FREQUENCY = 1000 // CYCLE_TIME  # Hz (up to 100Hz)
+PULSE_FREQUENCY = 1000 / CYCLE_TIME  # Hz (up to 100Hz)
 
-MIN_MS = 0.85  # 1ms nominal, min 0.6ms
-MAX_MS = 1.95  # 2ms nominal, max 2.4ms
+MIN_MS = 1.0  # 1ms nominal, min 0.6ms
+MAX_MS = 2.0  # 2ms nominal, max 2.4ms
 MID_MS = (MIN_MS + MAX_MS) / 2.0
-PWM_RANGE = 40000
