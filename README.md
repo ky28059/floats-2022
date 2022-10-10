@@ -73,8 +73,11 @@ the `pigpio` daemon running with
 sudo pigpiod
 ```
 or `sudo pigpiod -g` in a different terminal window if it needs to be terminated easily. Because `pigpio` uses the hardware
-PWM peripheral to generate PWM signal, it cannot be run with `radio.py`, which uses the hardware PWM peripheral to play 
-audio.
+PWM peripheral to generate PWM signal, it cannot be run with `radio.py` while audio output is set to the AV jack because 
+the Pi [uses the PWM peripheral to play audio over aux](https://raspberrypi.stackexchange.com/a/46538) (see also:
+[similar stackexchange question](https://raspberrypi.stackexchange.com/questions/88160/using-hardware-pwm-and-audio-simultaneously),
+[`pigpio` docs](http://abyz.me.uk/rpi/pigpio/faq.html#Sound_isnt_working)). Instead, connect to the speaker over bluetooth;
+audio will work then.
 
 ### Tests
 `/tests` contains test scripts to unit-test specific components of the float. The following is a list of tests and what
