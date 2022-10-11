@@ -79,6 +79,12 @@ the Pi [uses the PWM peripheral to play audio over aux](https://raspberrypi.stac
 [`pigpio` docs](http://abyz.me.uk/rpi/pigpio/faq.html#Sound_isnt_working)). Instead, connect to the speaker over bluetooth;
 audio will work then.
 
+To run the radio and hardware PWM hatch simultaneously, run
+```bash
+python3 main2.py
+```
+instead.
+
 ### Tests
 `/tests` contains test scripts to unit-test specific components of the float. The following is a list of tests and what
 they test for:
