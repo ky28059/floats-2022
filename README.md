@@ -6,18 +6,20 @@ LED lights. Mechanically, these systems are connected like so:
 ```mermaid
 graph TD;
     Pi(Raspberry Pi)-->|HDMI|Monitor;
-    Pi-->|Aux|Radio;
+    Pi-->|Bluetooth|Radio;
     Pi-->|GPIO pin 13|TalonSRX;
     TalonSRX-->CIM;
     T{{120V->12V Transformer}}-.->TalonSRX;
-    E1{{Extension Cord 1}}-.->T;
+    T-.->R1
+    T-.->Sign
     Pi-->|GPIO pin 17|L1[Limit Switch 1];
     Pi-->|GPIO pin 27|L2[Limit Switch 2];
     Pi-->|GPIO pin 24|R1[Relay 1];
     R1-->LEDs
     Pi-->|GPIO pin 23|R2[Relay 2];
     R2-->F[Fog Machine];
-    E2{{Extension cord 2}}-.->R2;
+    E1{{Extension Cord}}-.->T;
+    E1-.->F[Fog Machine];
     E1-.->Pi;
     E1-.->Monitor;
     E1-.->Radio;
