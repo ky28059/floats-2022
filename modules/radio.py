@@ -43,7 +43,7 @@ def radio(during_school: Event, is_passing: Event):
             if not mixer.music.get_busy():  # If the music player is idle, queue another track
                 curr = play_random_song_from_queue(curr)
             # Adjust right float as needed to determine how quiet it should be during class
-            mixer.music.set_volume(1.0 if is_passing.is_set() else 0.1)
+            mixer.music.set_volume(1.0 if is_passing.is_set() else 0.05)
 
             time.sleep(0.5)
 
