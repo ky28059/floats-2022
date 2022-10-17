@@ -44,7 +44,7 @@ used on the 2021 float. The script no longer checks the `MM-DD` formatted date, 
 the schedule.
 
 ### Radio
-```bash
+```shell
 python3 ./modules/radio.py
 ```
 The radio module maintains a similar architecture to last year's `radio2.py`, reading `.wav` files from `./music` and 
@@ -54,7 +54,7 @@ class time, and stops playing music 15 minutes after school.
 This year's music playlist can be found here: https://www.youtube.com/playlist?list=PL7WwPfnTGk9HsZMm-G_JlF1buJ8Nit32S
 
 ### Hatch
-```bash
+```shell
 python3 ./modules/hatch.py
 ```
 The hatch module runs the hatch mechanism on the float. It turns on the LEDs and fog machine and runs the motor forward,
@@ -66,12 +66,12 @@ runs during passing period, 45 minutes before school, and 15 minutes after schoo
 being taken by other tasks, such as the radio or video). To run the hatch with hardware PWM, see the next section.
 
 ### Hatch (with hardware PWM)
-```bash
+```shell
 python3 ./modules/hatch2.py
 ```
 `hatch2.py` runs the same logic as `hatch.py`, but uses `pigpio` hardware PWM instead of `RPi.GPIO`. `hatch2` requires
 the `pigpio` daemon running with
-```bash
+```shell
 sudo pigpiod
 ```
 or `sudo pigpiod -g` in a different terminal window if it needs to be terminated easily. Because `pigpio` uses the hardware
@@ -82,10 +82,18 @@ the Pi [uses the PWM peripheral to play audio over aux](https://raspberrypi.stac
 audio will work then.
 
 To run the radio and hardware PWM hatch simultaneously, run
-```bash
+```shell
 python3 main2.py
 ```
 instead.
+
+### Running on boot
+To run the float software on boot, add the following lines to the end of `/etc/rc.local`:
+```shell
+sudo pigpiod
+python3 main2.py &
+```
+replacing `main2.py` with the absolute path to the file.
 
 ### Tests
 `/tests` contains test scripts to unit-test specific components of the float. The following is a list of tests and what

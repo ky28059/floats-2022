@@ -37,7 +37,7 @@ def hatch(during_school: Event, is_passing: Event):
         # Close the hatch if it is open on startup (if the forward limit switch is not pressed)
         if not GPIO.read(FORWARD_LS_PIN):
             run_talon(0.3)
-            GPIO.wait_for_edge(FORWARD_LS_PIN, pigpio.RISING_EDGE, 5.0)
+            GPIO.wait_for_edge(FORWARD_LS_PIN, pigpio.RISING_EDGE, 1.25)
             run_talon(0)
             time.sleep(3)
 
@@ -50,7 +50,7 @@ def hatch(during_school: Event, is_passing: Event):
             run_talon(-0.15)
             GPIO.write(FM_RELAY_PIN, 1)  # Turn on the fog machine and LEDs
             GPIO.write(LED_RELAY_PIN, 1)
-            GPIO.wait_for_edge(BACKWARD_LS_PIN, pigpio.RISING_EDGE, 5.0)
+            GPIO.wait_for_edge(BACKWARD_LS_PIN, pigpio.RISING_EDGE, 1.25)
 
             # Stop the motor when hit and keep the hatch open for 3 seconds
             run_talon(0)
@@ -60,7 +60,7 @@ def hatch(during_school: Event, is_passing: Event):
             run_talon(0.3)
             GPIO.write(FM_RELAY_PIN, 0)  # Turn off the fog machine and LEDs
             GPIO.write(LED_RELAY_PIN, 0)
-            GPIO.wait_for_edge(FORWARD_LS_PIN, pigpio.RISING_EDGE, 5.0)
+            GPIO.wait_for_edge(FORWARD_LS_PIN, pigpio.RISING_EDGE, 1.25)
 
             # Stop the motor when hit and keep the hatch closed for 3 seconds
             run_talon(0)
